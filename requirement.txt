@@ -1,0 +1,4 @@
+selenium==4.24.0
+bs4==4.12.3
+fastapi==0.112.2
+openai==1.52.1
