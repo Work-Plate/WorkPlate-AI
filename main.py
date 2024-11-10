@@ -14,6 +14,11 @@ app = FastAPI()
 
 @app.post("/ai/chatbot")
 async def chat(request: ChatRequest):
+    """
+    사용자 메시지와 이전 대화 내용이 주어지면 챗봇의 응답을 반환합니다.
+    :param request: 사용자 정보, 이전 대화 내용, 메시지
+    :return: 챗봇 응답
+    """
     response = {
         "success": True,
         "message": "챗봇 응답 결과",
