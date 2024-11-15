@@ -1,10 +1,8 @@
-from datetime import datetime
-
 from fastapi import FastAPI
 
+from ai_model.gpt_model import GPTModel
 from entity.request_dto import ChatRequest
 from entity.response_dto import ChatResponse
-from model.gpt_model import GPTModel
 from service.chat_service import ChatService
 
 gpt_model = GPTModel()
