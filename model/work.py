@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 
 from config.database import Base
 
+
 class Work(Base):
     __tablename__ = "work"
 
