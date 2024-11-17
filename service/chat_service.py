@@ -1,5 +1,5 @@
-from entity.chatbot_message import Message
 from ai_model.gpt_model import GPTModel
+from entity.chatbot_message import Message
 from prompt.chat_prompts import CHAT_WITH_BOT_TEMPLATE
 
 
