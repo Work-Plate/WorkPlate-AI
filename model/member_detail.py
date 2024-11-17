@@ -12,6 +12,7 @@ class MemberDetail(Base):
 
     id = Column(BigInteger, primary_key=True)
     age = Column(BigInteger, nullable=False)
+    location = Column(String, nullable=False)
     main_experience = Column(Enum(WorkMainCategory))
     main_preference = Column(Enum(WorkMainCategory))
     physical_status = Column(Enum(PhysicalStatus))
