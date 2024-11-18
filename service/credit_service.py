@@ -5,6 +5,7 @@ from repository.credit_repository import CreditRepository
 class CreditService:
     def __init__(self, member_id:int):
         self.member_id = member_id
+
     def get_credit_balance(self): #  엽전 크레딧 잔액을 조회하는 서비스
         credit = CreditRepository()
         return credit.find_by_member_id(self.member_id).balance
