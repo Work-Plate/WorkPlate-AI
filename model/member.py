@@ -15,7 +15,6 @@ class Member(Base):
     user_role = Column(Enum(UserRole))
 
     details = relationship("MemberDetail", back_populates="member")
-    works = relationship("WorkMember", back_populates="members")
     chatbot_messages = relationship("ChatbotMessage", back_populates="member")
 
     created_at = Column(String(255), nullable=False)
