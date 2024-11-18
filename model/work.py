@@ -12,10 +12,7 @@ class Work(Base):
     __tablename__ = "work"
 
     id = Column(BigInteger, primary_key=True)
-    company = Column(String(255), nullable=False)
     location = Column(String(255), nullable=False)
-    salary_type = Column(Enum(SalaryType), nullable=False)
-    salary = Column(Integer)
     main_category = Column(Enum(WorkMainCategory), nullable=False)
     sub_category = Column(Enum(WorkSubCategory), nullable=False)
     physical_status = Column(Enum(PhysicalStatus), nullable=False)
