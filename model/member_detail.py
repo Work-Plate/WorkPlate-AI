@@ -20,7 +20,6 @@ class MemberDetail(Base):
     sub_preference = Column(Enum(WorkSubCategory))
 
     member_id = Column(BigInteger, ForeignKey("member.id"), unique=True)
-    member = relationship("Member", back_populates="details", uselist=False)
 
     created_at = Column(String(255), nullable=False)
     modified_at = Column(String(255), nullable=False)

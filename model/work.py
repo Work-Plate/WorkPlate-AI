@@ -20,7 +20,5 @@ class Work(Base):
     work_detail = Column(String(255))
     work_credit = Column(BigInteger)
 
-    members = relationship("WorkMember", back_populates="work")
-
     created_at = Column(String(255), nullable=False)
     modified_at = Column(String(255), nullable=False)
