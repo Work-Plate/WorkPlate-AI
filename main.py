@@ -9,8 +9,10 @@ from repository.work_repository import WorkRepository
 from service.chat_service import ChatService
 from service.credit_service import CreditService
 from service.work_service import WorkService
+from utils.init_db import create_tables
 
 session = Session()
+create_tables()
 
 gpt_model = GPTModel()
 
