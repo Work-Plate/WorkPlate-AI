@@ -1,6 +1,7 @@
 from ai_model.gpt_model import GPTModel
 from prompt.chat_prompts import CHAT_WITH_BOT_TEMPLATE, USER_INTENTION_CLASSIFY_TEMPLATE
-
+from credit_service import CreditService # 추가
+from work_service import WorkService # 추가
 
 class ChatService:
     def __init__(self, gpt_model: GPTModel):
