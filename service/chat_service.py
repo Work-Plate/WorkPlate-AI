@@ -31,7 +31,7 @@ class ChatService:
             # 반환 받는 코드 작성 해야함
             return
         elif user_intention == "Credit_Inquiry":
-            credit_service = CreditService(self.member_id)
+            credit_service = CreditService()
             balance = credit_service.get_credit_balance()
             response_text = f"잔여 엽전을 조회해드릴게요.\n 잔여 엽전 크레딧은 {balance}입니다. "
         else:
