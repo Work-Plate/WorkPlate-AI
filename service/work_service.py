@@ -1,20 +1,36 @@
-from ai_model.gpt_model import GPTModel
+from entity.work import WorkIdList
+from model.member_detail import MemberDetail
+from repository.member_detail_repository import MemberDetailRepository
 from repository.work_repository import WorkRepository
-# 사용
+
 
 class WorkService:
-    # WorkRepository의 find_by_physical_status_and_location-> 5개, 10개
-    def __init__(self, gpt_model: GPTModel, member_id: int):
-        self.gpt_model = gpt_model
-        self.member_id = member_id
-    def recommend(self):
-        work_id_list = []
-        # WorkRepository 기준으로 손봐야 함.
-        work_repo = WorkRepository()
-        work_lst = work_repo.find_by_physical_status_and_location(self.member_id)
-        # 필터링하기
-        # 선호 직종 -> 소분류 일치
-        ## 기존 경험 -> 소분류 일치
-        ### N개가 없으면 대분류 일치"""
+    def __init__(self, member_detail_repository: MemberDetailRepository, work_repository: WorkRepository):
+        self.member_detail_repository = member_detail_repository
+        self.work_repository = work_repository
 
-        return work_id_list
+    def recommend(self, member_id: int) -> WorkIdList:
+        member_detail: MemberDetail = self.member_detail_repository.find_by_member_id(member_id)
+        candidate_work_list = self.work_repository.find_by_physical_status_and_location(member_detail.physical_status, member_detail.location)
+
+        work_list = []
+        for work in candidate_work_list:
+            if work.sub_category == member_detail.sub_preference:
+                work_list.append(work.id)
+
+        if len(work_list) <= 10:
+            for work in candidate_work_list:
+                if work.sub_category == member_detail.sub_experience:
+                    work_list.append(work.id)
+
+        if len(work_list) <= 10:
+            for work in candidate_work_list:
+                if work.id not in work_list and work.main_category == member_detail.main_preference:
+                    work_list.append(work.id)
+
+        if len(work_list) <= 10:
+            for work in candidate_work_list:
+                if work.id not in work_list and work.main_category == member_detail.main_experience:
+                    work_list.append(work.id)
+
+        return WorkIdList(job_id_list=work_list)
