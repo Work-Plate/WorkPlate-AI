@@ -1,8 +1,8 @@
 from ai_model.gpt_model import GPTModel
-from credit_service import CreditService
+from service.credit_service import CreditService
 from entity.response_dto import ChatResponse
 from prompt.chat_prompts import CHAT_WITH_BOT_TEMPLATE, USER_INTENTION_CLASSIFY_TEMPLATE
-from work_service import WorkService
+from service.work_service import WorkService
 
 
 class ChatService:
