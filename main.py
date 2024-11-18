@@ -34,6 +34,6 @@ async def chat(request: ChatRequest):
     :param request: 사용자 ID, 메시지
     :return: 챗봇 응답
     """
-    response = chat_service.inference_user_intention(request.member_id, request.user_message)
+    response = chat_service.inference_user_intention(request.username, request.user_message)
 
     return response
