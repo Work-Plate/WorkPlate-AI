@@ -24,10 +24,10 @@ class ChatService:
         except Exception as e:
             raise Exception(f"OpenAI API -> 텍스트 응답 생성 중 오류 발생: {str(e)}")
 
-    def inference_user_intention(self, member_id: int, user_message: str) -> ChatResponse:
+    def inference_user_intention(self, username: str, user_message: str) -> ChatResponse:
         """
         3가지 타입으로 사용자 의도 분류(엽전 조회, 일거리 추천, 일반 대화)
-        :param member_id: 사용자의 ID
+        :param username: 사용자의 이름
         :param user_message: 사용자의 메시지
         :return: 챗봇의 응답
         """
@@ -37,14 +37,14 @@ class ChatService:
         if user_intention == "Work_Recommendation":
             # 반환 받는 코드 작성 해야함
             # 적절히 수정하면 될듯 합니다 - Jieun Lim
-            work_list = self.work_service.recommend(member_id)
+            work_list = self.work_service.recommend(username)
             return ChatResponse(**{
                 "task_type": "job_recommend",
                 "text": "일자리를 추천해드릴게요.",
                 "additional_data": work_list
             })
         elif user_intention == "Credit_Inquiry":
-            balance = self.credit_service.get_credit_balance(member_id)
+            balance = self.credit_service.get_credit_balance(username)
             response_text = f"잔여 엽전을 조회해드릴게요.\n 잔여 엽전 크레딧은 {balance}입니다. "
         else:
             response_text = self.send_message(user_message)

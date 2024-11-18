@@ -9,8 +9,8 @@ class WorkService:
         self.member_detail_repository = member_detail_repository
         self.work_repository = work_repository
 
-    def recommend(self, member_id: int) -> WorkIdList:
-        member_detail: MemberDetail = self.member_detail_repository.find_by_member_id(member_id)
+    def recommend(self, username: str) -> WorkIdList:
+        member_detail: MemberDetail = self.member_detail_repository.find_by_username(username)
         candidate_work_list = self.work_repository.find_by_physical_status_and_location(member_detail.physical_status, member_detail.location)
 
         work_list = []
