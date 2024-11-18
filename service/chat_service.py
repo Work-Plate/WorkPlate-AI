@@ -19,6 +19,7 @@ class ChatService:
             return response_text
         except Exception as e:
             raise Exception(f"OpenAI API -> 텍스트 응답 생성 중 오류 발생: {str(e)}")
+
     def inference_user_intention(self, user_message: str):  # 3가지 타입으로 사용자 의도 분류(엽전 조회, 일거리 추천, 일반 대화)
         user_intention = self.gpt_model.generate_response(USER_INTENTION_CLASSIFY_TEMPLATE,
                                                           user_message)  # 사용자 대화 의도
