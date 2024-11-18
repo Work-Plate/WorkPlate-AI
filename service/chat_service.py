@@ -1,13 +1,14 @@
 from ai_model.gpt_model import GPTModel
-from prompt.chat_prompts import CHAT_WITH_BOT_TEMPLATE, USER_INTENTION_CLASSIFY_TEMPLATE
 from credit_service import CreditService
-from repository.credit_repository import CreditRepository
+from prompt.chat_prompts import CHAT_WITH_BOT_TEMPLATE, USER_INTENTION_CLASSIFY_TEMPLATE
 from work_service import WorkService
 
 
 class ChatService:
-    def __init__(self, gpt_model: GPTModel):
+    def __init__(self, gpt_model: GPTModel, work_service: WorkService, credit_service: CreditService):
         self.gpt_model = gpt_model
+        self.work_service = work_service
+        self.credit_service = credit_service
 
     def send_message(self, message: str):
         """
@@ -23,17 +24,18 @@ class ChatService:
         except Exception as e:
             raise Exception(f"OpenAI API -> 텍스트 응답 생성 중 오류 발생: {str(e)}")
 
-    def inference_user_intention(self, user_message: str, credit_repository: CreditRepository):  # 3가지 타입으로 사용자 의도 분류(엽전 조회, 일거리 추천, 일반 대화)
+    def inference_user_intention(self, member_id: int, user_message: str):  # 3가지 타입으로 사용자 의도 분류(엽전 조회, 일거리 추천, 일반 대화)
         response_text = ''
         user_intention = self.gpt_model.generate_response(USER_INTENTION_CLASSIFY_TEMPLATE,
                                                           user_message)  # 사용자 대화 의도
         # user_intention: Work_Recommendation, Credit_Inquiry, General_Conversation
         if user_intention == "Work_Recommendation":
             # 반환 받는 코드 작성 해야함
+            # 적절히 수정하면 될듯 합니다 - Jieun Lim
+            self.work_service.recommend(member_id)
             return
         elif user_intention == "Credit_Inquiry":
-            credit_service = CreditService(credit_repository)
-            balance = credit_service.get_credit_balance()
+            balance = self.credit_service.get_credit_balance(member_id)
             response_text = f"잔여 엽전을 조회해드릴게요.\n 잔여 엽전 크레딧은 {balance}입니다. "
         else:
             response_text = self.send_message(user_message)
