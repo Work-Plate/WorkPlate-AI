@@ -1,7 +1,9 @@
 from pydantic import BaseModel
 
+from entity.work import WorkIdList
+
 
 class ChatResponse(BaseModel):
-    success: bool
-    message: str
-    data: str
+    task_type: str
+    text: str
+    additional_data: WorkIdList | None

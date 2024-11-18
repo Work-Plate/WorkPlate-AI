@@ -31,19 +31,26 @@ class ChatService:
         :param user_message: 사용자의 메시지
         :return: 챗봇의 응답
         """
-        response_text = ''
         user_intention = self.gpt_model.generate_response(USER_INTENTION_CLASSIFY_TEMPLATE,
                                                           user_message)  # 사용자 대화 의도
         # user_intention: Work_Recommendation, Credit_Inquiry, General_Conversation
         if user_intention == "Work_Recommendation":
             # 반환 받는 코드 작성 해야함
             # 적절히 수정하면 될듯 합니다 - Jieun Lim
-            self.work_service.recommend(member_id)
-            return
+            work_list = self.work_service.recommend(member_id)
+            return ChatResponse(**{
+                "task_type": "job_recommend",
+                "text": "일자리를 추천해드릴게요.",
+                "additional_data": work_list
+            })
         elif user_intention == "Credit_Inquiry":
             balance = self.credit_service.get_credit_balance(member_id)
             response_text = f"잔여 엽전을 조회해드릴게요.\n 잔여 엽전 크레딧은 {balance}입니다. "
         else:
             response_text = self.send_message(user_message)
 
-        return response_text
+        return ChatResponse(**{
+            "task_type": "conversation",
+            "text": response_text,
+            "additional_data": None
+        })
