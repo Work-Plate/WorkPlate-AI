@@ -9,11 +9,10 @@ class WorkRepository:
         self.session = session
 
     def find_by_physical_status_and_location(self, physical_status: PhysicalStatus, location: str):
-        location_prefix = " ".join(location.split()[:2])
         return (
             self.session.query(Work)
             .filter(Work.physical_status == physical_status,
-                    Work.location.like(f"{location_prefix}%")
+                    Work.location.like(f"%{location}%")
             )
             .all()
         )
