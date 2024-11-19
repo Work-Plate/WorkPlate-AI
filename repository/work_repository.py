@@ -12,7 +12,7 @@ class WorkRepository:
         return (
             self.session.query(Work)
             .filter(Work.physical_status == physical_status,
-                    Work.location.like(f"{location}%")
+                    Work.location.like(f"%{location}%")
             )
             .all()
         )
