@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from openai import OpenAIError
+from starlette.responses import JSONResponse
 
 from ai_model.gpt_model import GPTModel
 from config.database import Session
@@ -26,6 +28,27 @@ work_service = WorkService(member_detail_repository, work_repository)
 chat_service = ChatService(gpt_model, work_service, credit_sevice)
 
 app = FastAPI()
+
+@app.exception_handler(ValueError)
+async def value_error_handler(request, exc: ValueError):
+    return JSONResponse(
+        status_code=400,
+        content={"message": str(exc)}
+    )
+
+@app.exception_handler(OpenAIError)
+async def openai_error_handler(request, exc: OpenAIError):
+    return JSONResponse(
+        status_code=400,
+        content={"message": "OpenAI Error입니다. 관리자에게 문의하세요."}
+    )
+
+@app.exception_handler(Exception)
+async def value_error_handler(request, exc: Exception):
+    return JSONResponse(
+        status_code=400,
+        content={"message": "예상치 못한 Error입니다. 관리자에게 문의하세요"}
+    )
 
 @app.post("/ai/chatbot")
 async def chat(request: ChatRequest):
