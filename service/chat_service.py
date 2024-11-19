@@ -1,7 +1,9 @@
 from ai_model.gpt_model import GPTModel
+from model.enum.physical_status import PhysicalStatus
+from model.enum.work_sub_category import WorkSubCategory
 from service.credit_service import CreditService
 from entity.response_dto import ChatResponse
-from prompt.chat_prompts import CHAT_WITH_BOT_TEMPLATE, USER_INTENTION_CLASSIFY_TEMPLATE
+from prompt.chat_prompts import CHAT_WITH_BOT_TEMPLATE, USER_INTENTION_CLASSIFY_TEMPLATE, ENTITY_EXTRACTION_PROMPT
 from service.work_service import WorkService
 
 
@@ -24,6 +26,37 @@ class ChatService:
         except Exception as e:
             raise Exception(f"OpenAI API -> 텍스트 응답 생성 중 오류 발생: {str(e)}")
 
+    @staticmethod
+    def create_profile(location: str, physical_status: str | None, experience: str | None,
+                       preference: str | None) -> dict:
+        return {
+            "location": location,
+            "physical_status": PhysicalStatus(physical_status) if physical_status is not None else None,
+            "experience": WorkSubCategory(experience) if experience is not None else None,
+            "preference": WorkSubCategory(preference) if preference is not None else None
+        }
+
+    def extract_entities(self, user_message: str):
+        """
+        user_message를 기반으로 노쇠 정도, 기존 경험, 선호 직종을 추출합니다.
+        :param user_message: 사용자 메시지
+        :return: location, physical_status, experience, preference 를 포함한 딕셔너리
+        """
+        try:
+            prompt = ENTITY_EXTRACTION_PROMPT
+            entity_str = self.gpt_model.generate_response(prompt, user_message)  # "<Location> <신체상태> <기존경험> <선호경험>"
+            response = entity_str.replace('"', '').replace("\"", "")  # '이나 " 제거
+            location, physical_status, experience, preference = [
+                None if x == "UNKNOWN" else x
+                for x in response.split(', ')
+            ]
+            return self.create_profile(location=location,
+                                       physical_status=physical_status,
+                                       experience=experience,
+                                       preference=preference)
+        except Exception as e:
+            raise Exception(f"OpenAI API -> 유저 엔티티 추출 중 오류 발생: {str(e)}")
+
     def inference_user_intention(self, username: str, user_message: str) -> ChatResponse:
         """
         3가지 타입으로 사용자 의도 분류(엽전 조회, 일거리 추천, 일반 대화)
@@ -33,11 +66,12 @@ class ChatService:
         """
         user_intention = self.gpt_model.generate_response(USER_INTENTION_CLASSIFY_TEMPLATE,
                                                           user_message)  # 사용자 대화 의도
-        # user_intention: Work_Recommendation, Credit_Inquiry, General_Conversation
+        # user_intention 별 대화 실행(Work_Recommendation, Credit_Inquiry, General_Conversation)
         if user_intention == "Work_Recommendation":
-            # 반환 받는 코드 작성 해야함
-            # 적절히 수정하면 될듯 합니다 - Jieun Lim
-            work_list = self.work_service.recommend(username)
+            # 유저 응답에서 엔티티 추출
+            entities = self.extract_entities(user_message)
+            physical_status, location, preference, experience = entities['physical_status'], entities['location'], entities['preference'], entities['experience']
+            work_list = self.work_service.recommend(username, physical_status, location, preference, experience)
             return ChatResponse(**{
                 "task_type": "job_recommend",
                 "text": "일자리를 추천해드릴게요.",
@@ -54,3 +88,5 @@ class ChatService:
             "text": response_text,
             "additional_data": None
         })
+
+
