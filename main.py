@@ -32,7 +32,7 @@ async def value_error_handler(request, exc: ValueError):
     logger.error(f"An error occerred: {str(exc)}")
 
     return JSONResponse(
-        status_code=400,
+        status_code=200,
         content={"message": str(exc)}
     )
 
@@ -43,7 +43,7 @@ async def openai_error_handler(request, exc: OpenAIError):
     logger.error(f"An error occerred: {str(exc)}")
 
     return JSONResponse(
-        status_code=400,
+        status_code=200,
         content={"message": "OpenAI Error입니다. 관리자에게 문의하세요."}
     )
 
@@ -54,7 +54,7 @@ async def value_error_handler(request, exc: Exception):
     logger.error(f"An error occerred: {str(exc)}")
 
     return JSONResponse(
-        status_code=400,
+        status_code=200,
         content={"message": "예상치 못한 Error입니다. 관리자에게 문의하세요"}
     )
 
