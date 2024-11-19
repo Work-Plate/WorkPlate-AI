@@ -1,7 +1,3 @@
-from enum import member
-
-from dns.e164 import query
-
 from entity.work import WorkIdList
 from model.enum.physical_status import PhysicalStatus
 from model.enum.work_main_category import WorkMainCategory
