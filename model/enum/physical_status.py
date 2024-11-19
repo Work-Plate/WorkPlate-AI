@@ -2,6 +2,6 @@ import enum
 
 
 class PhysicalStatus(enum.Enum):
-    FRAIL = "frail"
-    NORMAL = "normal"
-    PRE_FRAIL = "pre_frail"
+    FRAIL = "FRAIL"
+    NORMAL = "NORMAL"
+    PRE_FRAIL = "PRE_FRAIL"
