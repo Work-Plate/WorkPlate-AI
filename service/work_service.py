@@ -1,3 +1,5 @@
+from enum import member
+
 from entity.work import WorkIdList
 from model.enum.physical_status import PhysicalStatus
 from model.enum.work_main_category import WorkMainCategory
@@ -52,6 +54,8 @@ class WorkService:
     ) -> WorkIdList:
 
         member_detail: MemberDetail = self.member_detail_repository.find_by_username(username)
+        if not member_detail:
+            raise ValueError(f"주어진 {username}으로 유저 상세 정보를 찾을 수 없습니다.")
 
         query_physical_status = physical_status if physical_status is not None else member_detail.physical_status
         query_location = location if location else member_detail.location
