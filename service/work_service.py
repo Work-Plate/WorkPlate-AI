@@ -1,5 +1,7 @@
 from enum import member
 
+from dns.e164 import query
+
 from entity.work import WorkIdList
 from model.enum.physical_status import PhysicalStatus
 from model.enum.work_main_category import WorkMainCategory
@@ -59,6 +61,8 @@ class WorkService:
 
         query_physical_status = physical_status if physical_status is not None else member_detail.physical_status
         query_location = location if location else member_detail.location
+        if len(query_location.split()) >= 2:
+            query_location = " ".join(query_location.split()[:2])
         query_sub_preference = preference if preference else member_detail.sub_preference
         query_sub_experience = experience if experience else member_detail.sub_experience
 
